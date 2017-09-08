@@ -34,7 +34,7 @@ function json@processValue {
             json@dumpPair
             ;;
 
-        [0-9])
+        [0-9-])
             json@extractInteger || json@extractNumber || return 1
             json@dumpPair
             ;;
