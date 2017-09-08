@@ -9,7 +9,14 @@ function json:printProperties {
     local jsonExtractedValue=""
     local jsonExtractedType=""
 
-    json@processValue
+    json@processValue || return 41
+    json@skipWhitespaces
+
+    if [[ -n "$jsonText" ]]; then
+        return 41
+    fi
+
+    return 0
 }
 
 function json@dumpPair {
@@ -156,6 +163,10 @@ function json@extractInteger {
         local match="${BASH_REMATCH[0]}"
         local matchLen="${#match}"
 
+        if [[ "$match" == 0[0-9]* ]]; then
+            return 42
+        fi
+
         jsonExtractedValue="$match"
         jsonExtractedType="integer"
         jsonText="${jsonText:matchLen}"
@@ -171,6 +182,10 @@ function json@extractNumber {
     if [[ "$jsonText" =~ ^-?[0-9]+('.'[0-9]*)?([eE][+-]?[0-9]+)? ]]; then
         local match="${BASH_REMATCH[0]}"
         local matchLen="${#match}"
+
+        if [[ "$match" == 0[0-9]* ]]; then
+            return 42
+        fi
 
         jsonExtractedValue="$match"
         jsonExtractedType="number"
