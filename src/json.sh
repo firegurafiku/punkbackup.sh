@@ -9,7 +9,7 @@ function json:printProperties {
     local jsonExtractedValue=""
     local jsonExtractedType=""
 
-    json@processObject
+    json@processValue
 }
 
 function json@dumpPair {
