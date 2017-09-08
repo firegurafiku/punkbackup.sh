@@ -35,12 +35,12 @@ function json@processValue {
             ;;
 
         [0-9])
-            json@extractNumber || return 1
+            json@extractInteger || json@extractNumber || return 1
             json@dumpPair
             ;;
 
         *)
-            json@extractBool || return 1
+            json@extractBool || extractNull || return 1
             json@dumpPair
             return 1
     esac
@@ -148,6 +148,21 @@ function json@extractString {
     return 1
 }
 
+function json@extractInteger {
+    json@skipWhitespaces
+
+    if [[ "$jsonText" =~ ^-?[0-9]+ ]]; then
+        local match="${BASH_REMATCH[0]}"
+        local matchLen="${#match}"
+
+        jsonExtractedValue="$match"
+        jsonExtractedType="integer"
+        jsonText="${jsonText:matchLen}"
+        return 0
+    fi
+
+    return 1
+}
 
 function json@extractNumber {
     json@skipWhitespaces
@@ -175,6 +190,19 @@ function json@extractBool {
         jsonExtractedValue="$match"
         jsonExtractedType="bool"
         jsonText="${jsonText:matchLen}"
+        return 0
+    fi
+
+    return 1
+}
+
+function json@extractNull {
+    json@skipWhitespaces
+
+    if [[ "$jsonText" =~ ^null ]]; then
+        jsonExtractedValue="null"
+        jsonExtractedType="null"
+        jsonText="${jsonText:4}"
         return 0
     fi
 
