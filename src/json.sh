@@ -23,34 +23,34 @@ function json@processValue {
     local firstCh="${jsonText::1}"
     case "$firstCh" in
         "[")
-            json@processArray || return 1
+            json@processArray || return 41
             ;;
 
         "{")
-            json@processObject || return 1
+            json@processObject || return 41
             ;;
 
         '"')
-            json@extractString || return 1
+            json@extractString || return 41
             json@dumpPair
             ;;
 
         [0-9-])
-            json@extractInteger || json@extractNumber || return 1
+            json@extractInteger || json@extractNumber || return 41
             json@dumpPair
             ;;
 
         *)
-            json@extractBool || json@extractNull || return 1
+            json@extractBool || json@extractNull || return 41
             json@dumpPair
-            return 1
+            return 41
     esac
 
     return 0
 }
 
 function json@processArray {
-    json@skipDelimiter "[" || return 1
+    json@skipDelimiter "[" || return 41
     if json@skipDelimiter "]"; then
         return 0
     fi
@@ -59,7 +59,7 @@ function json@processArray {
     local idx=0
     while true; do
         jsonPath="$path.$idx"
-        json@processValue || return 1
+        json@processValue || return 41
 
         if json@skipDelimiter ","; then
             (( idx+=1 ))
@@ -70,14 +70,14 @@ function json@processArray {
             break
         fi
 
-        return 1
+        return 41
     done
 
     return 0
 }
 
 function json@processObject {
-    json@skipDelimiter "{" || return 1
+    json@skipDelimiter "{" || return 41
     if json@skipDelimiter "}"; then
         return 0
     fi
@@ -85,13 +85,13 @@ function json@processObject {
     local path="$jsonPath"
     local key
     while true; do
-        json@extractString || return 1
+        json@extractString || return 41
         key="$jsonExtractedValue"
 
-        json@skipDelimiter ":" || return 1
+        json@skipDelimiter ":" || return 41
         jsonPath="$path.$key"
 
-        json@processValue || return 1
+        json@processValue || return 41
 
         if json@skipDelimiter ","; then
             continue
@@ -101,7 +101,7 @@ function json@processObject {
             break
         fi
 
-        return 1
+        return 41
     done
 
     return 0
@@ -129,7 +129,7 @@ function json@skipDelimiter {
         return 0
     fi
 
-    return 1
+    return 41
 }
 
 function json@extractString {
@@ -146,7 +146,7 @@ function json@extractString {
         return 0
     fi
 
-    return 1
+    return 41
 }
 
 function json@extractInteger {
@@ -162,7 +162,7 @@ function json@extractInteger {
         return 0
     fi
 
-    return 1
+    return 41
 }
 
 function json@extractNumber {
@@ -178,7 +178,7 @@ function json@extractNumber {
         return 0
     fi
 
-    return 1
+    return 41
 }
 
 function json@extractBool {
@@ -194,7 +194,7 @@ function json@extractBool {
         return 0
     fi
 
-    return 1
+    return 41
 }
 
 function json@extractNull {
@@ -207,5 +207,5 @@ function json@extractNull {
         return 0
     fi
 
-    return 1
+    return 41
 }
