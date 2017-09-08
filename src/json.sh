@@ -1,83 +1,15 @@
 
+function json:printProperties { # string
+    local jsonText="$1"
+    local jsonPath=""
+    local jsonExtractedValue=""
+    local jsonExtractedType=""
+
+    json@processObject
+}
+
 function json@dumpPair {
     echo "$jsonPath" = "$jsonExtractedValue"
-}
-
-function json@skipWhitespaces {
-    if [[ "$jsonText" =~ ^([[:space:]]+) ]]; then
-        local match="${BASH_REMATCH[1]}"
-        local matchLen="${#match}"
-
-        jsonText="${jsonText:matchLen}"
-    fi
-
-    return 0
-}
-
-function json@skipDelimiter {
-    local prefix="$1"
-    local prefixLen="${#prefix}"
-
-    json@skipWhitespaces
-
-    if [[ "${jsonText::prefixLen}" == "$prefix" ]]; then
-        jsonText="${jsonText:prefixLen}"
-        return 0
-    fi
-
-    return 1
-}
-
-function json@extractString {
-
-    json@skipWhitespaces
-
-    # Regex is simplified.
-    if [[ "$jsonText" =~ ^'"'([^\"]*)'"' ]]; then
-        local match="${BASH_REMATCH[1]}"
-        local matchLen="${#match}"
-
-        jsonExtractedValue="$match"
-        jsonExtractedType="string"
-        jsonText="${jsonText:matchLen+2}"
-        return 0
-    fi
-
-    return 1
-}
-
-
-function json@extractNumber {
-    json@skipWhitespaces
-
-    # Regex is simplified.
-    if [[ "$jsonText" =~ ^([0-9]+) ]]; then
-        local match="${BASH_REMATCH[1]}"
-        local matchLen="${#match}"
-
-        jsonExtractedValue="$match"
-        jsonExtractedType="string"
-        jsonText="${jsonText:matchLen}"
-        return 0
-    fi
-
-    return 1
-}
-
-function json@extractBool {
-    json@skipWhitespaces
-
-    if [[ "$jsonText" =~ ^(true|false) ]]; then
-        local match="${BASH_REMATCH[1]}"
-        local matchLen="${#match}"
-
-        jsonExtractedValue="$match"
-        jsonExtractedType="bool"
-        jsonText="${jsonText:matchLen}"
-        return 0
-    fi
-
-    return 1
 }
 
 function json@processValue {
@@ -173,11 +105,79 @@ function json@processObject {
     return 0
 }
 
-function json:printProperties { # string
-    local jsonText="$1"
-    local jsonPath=""
-    local jsonExtractedValue=""
-    local jsonExtractedType=""
+function json@skipWhitespaces {
+    if [[ "$jsonText" =~ ^([[:space:]]+) ]]; then
+        local match="${BASH_REMATCH[1]}"
+        local matchLen="${#match}"
 
-    json@processObject
+        jsonText="${jsonText:matchLen}"
+    fi
+
+    return 0
+}
+
+function json@skipDelimiter {
+    local prefix="$1"
+    local prefixLen="${#prefix}"
+
+    json@skipWhitespaces
+
+    if [[ "${jsonText::prefixLen}" == "$prefix" ]]; then
+        jsonText="${jsonText:prefixLen}"
+        return 0
+    fi
+
+    return 1
+}
+
+function json@extractString {
+
+    json@skipWhitespaces
+
+    # Regex is simplified.
+    if [[ "$jsonText" =~ ^'"'([^\"]*)'"' ]]; then
+        local match="${BASH_REMATCH[1]}"
+        local matchLen="${#match}"
+
+        jsonExtractedValue="$match"
+        jsonExtractedType="string"
+        jsonText="${jsonText:matchLen+2}"
+        return 0
+    fi
+
+    return 1
+}
+
+
+function json@extractNumber {
+    json@skipWhitespaces
+
+    # Regex is simplified.
+    if [[ "$jsonText" =~ ^([0-9]+) ]]; then
+        local match="${BASH_REMATCH[1]}"
+        local matchLen="${#match}"
+
+        jsonExtractedValue="$match"
+        jsonExtractedType="string"
+        jsonText="${jsonText:matchLen}"
+        return 0
+    fi
+
+    return 1
+}
+
+function json@extractBool {
+    json@skipWhitespaces
+
+    if [[ "$jsonText" =~ ^(true|false) ]]; then
+        local match="${BASH_REMATCH[1]}"
+        local matchLen="${#match}"
+
+        jsonExtractedValue="$match"
+        jsonExtractedType="bool"
+        jsonText="${jsonText:matchLen}"
+        return 0
+    fi
+
+    return 1
 }
