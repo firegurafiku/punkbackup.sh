@@ -17,7 +17,6 @@ function json@dumpPair {
 }
 
 function json@processValue {
-
     json@skipWhitespaces
 
     local firstCh="${jsonText::1}"
@@ -77,9 +76,7 @@ function json@processArray {
 }
 
 function json@processObject {
-
     json@skipDelimiter "{" || return 1
-
     if json@skipDelimiter "}"; then
         return 0
     fi
@@ -135,7 +132,6 @@ function json@skipDelimiter {
 }
 
 function json@extractString {
-
     json@skipWhitespaces
 
     # Regex is simplified.
