@@ -41,7 +41,7 @@ function json@processValue {
             ;;
 
         *)
-            json@extractBool || extractNull || return 1
+            json@extractBool || json@extractNull || return 1
             json@dumpPair
             return 1
     esac
