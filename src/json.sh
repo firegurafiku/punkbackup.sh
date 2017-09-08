@@ -134,8 +134,8 @@ function json@skipDelimiter {
 function json@extractString {
     json@skipWhitespaces
 
-    # Regex is simplified.
-    if [[ "$jsonText" =~ ^'"'([^\"]*)'"' ]]; then
+    if [[ "$jsonText" =~ ^'"'(([^\"\\$'\n']|\\[\"\\bfnrt/]|\\u[0-9a-fA-F]{4})*)\" ]]
+    then
         local match="${BASH_REMATCH[1]}"
         local matchLen="${#match}"
 
@@ -152,13 +152,12 @@ function json@extractString {
 function json@extractNumber {
     json@skipWhitespaces
 
-    # Regex is simplified.
-    if [[ "$jsonText" =~ ^([0-9]+) ]]; then
-        local match="${BASH_REMATCH[1]}"
+    if [[ "$jsonText" =~ ^-?[0-9]+('.'[0-9]*)?([eE][+-]?[0-9]+)? ]]; then
+        local match="${BASH_REMATCH[0]}"
         local matchLen="${#match}"
 
         jsonExtractedValue="$match"
-        jsonExtractedType="string"
+        jsonExtractedType="number"
         jsonText="${jsonText:matchLen}"
         return 0
     fi
