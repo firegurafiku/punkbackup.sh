@@ -1,5 +1,9 @@
+# This code implements a simplified streaming JSON parser.
 
-function json:printProperties { # string
+function json:printProperties {
+    # These are pseudo-global variables, freely available
+    # for all nested functions in current call hierarchy.
+    # This is how shell treats locals.
     local jsonText="$1"
     local jsonPath=""
     local jsonExtractedValue=""
