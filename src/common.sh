@@ -7,6 +7,25 @@ declare -a ProviderModules=()
 
 declare DefaultProvider
 
+function detectProvider {
+    local remoteUrl="$1"
+    local provider
+    for provider in "${ProviderModules[@]}"; do
+        if [[ "$remoteUrl" =~ ^"$provider:/" ]]; then
+            println "$provider"
+            return
+        fi
+    done
+
+    if [[ "$remoteUrl" =~ ^([a-zA-Z][a-zA-Z0-9+-]*):/ ]]; then
+        provider="${BASH_REMATCH[1]}"
+        abort 1 "Backup provider '$provider:/' unsupported"
+    fi
+
+    println "$DefaultProvider"
+    return
+}
+
 function skipln {
     printf "\n"
 }
