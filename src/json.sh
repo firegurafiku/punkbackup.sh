@@ -163,6 +163,7 @@ function json@extractInteger {
         local match="${BASH_REMATCH[0]}"
         local matchLen="${#match}"
 
+        # Octal integers are forbined by JSON specification.
         if [[ "$match" == 0[0-9]* ]]; then
             return 41
         fi
