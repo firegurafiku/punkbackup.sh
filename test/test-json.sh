@@ -31,5 +31,5 @@ function testValidSample {
     fi
 }
 
-runOnEachFile testInvalidSample -- test/json-parser-samples/invalid-*.json
+runOnEachFile testInvalidSample -- test/json-parser-samples/invalid-*.json &&
 runOnEachFile testValidSample -- test/json-parser-samples/valid-*.json
