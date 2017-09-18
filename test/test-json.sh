@@ -3,8 +3,9 @@ set -o errexit
 set -o nounset
 
 source src/json.sh
+source test/common.sh
 
-function test:json@testInvalidSample {
+function testInvalidSample {
     local filename="$1"
     local contents="$(<"$filename")"
     local err=0
@@ -12,16 +13,23 @@ function test:json@testInvalidSample {
 
     if [[ "$err" -eq 41 ]]; then
         return 0
+    else
+        return 1
     fi
-
-    return 1
 }
 
-declare filename
-for filename in test/json-parser-samples/invalid-*.json; do
-    if test:json@testInvalidSample "$filename"; then
-        echo "PASS -- $filename"
+function testValidSample {
+    local filename="$1"
+    local contents="$(<"$filename")"
+    local err=0
+    json:printProperties "$contents" >/dev/null || err=$?
+
+    if [[ "$err" -eq 0 ]]; then
+        return 0
     else
-        echo "FAIL -- $filename"
+        return 1
     fi
-done
+}
+
+runOnEachFile testInvalidSample -- test/json-parser-samples/invalid-*.json
+runOnEachFile testValidSample -- test/json-parser-samples/valid-*.json
