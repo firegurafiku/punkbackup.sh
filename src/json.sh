@@ -164,7 +164,7 @@ function json@extractInteger {
         local matchLen="${#match}"
 
         if [[ "$match" == 0[0-9]* ]]; then
-            return 42
+            return 41
         fi
 
         jsonExtractedValue="$match"
@@ -184,7 +184,7 @@ function json@extractNumber {
         local matchLen="${#match}"
 
         if [[ "$match" == 0[0-9]* ]]; then
-            return 42
+            return 41
         fi
 
         jsonExtractedValue="$match"
