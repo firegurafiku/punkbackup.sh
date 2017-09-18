@@ -50,7 +50,7 @@ function json@processValue {
         *)
             json@extractBool || json@extractNull || return 41
             json@dumpPair
-            return 41
+            ;;
     esac
 
     return 0
@@ -162,6 +162,12 @@ function json@extractInteger {
     if [[ "$jsonText" =~ ^-?[0-9]+ ]]; then
         local match="${BASH_REMATCH[0]}"
         local matchLen="${#match}"
+
+        # If decimal point or exponential notation follows,
+        # the number is definitely not an integer.
+        if [[ "${jsonText:matchLen:1}" =~ ^[.eE]$ ]]; then
+            return 41
+        fi
 
         # Octal integers are forbined by JSON specification.
         if [[ "$match" == 0[0-9]* ]]; then
