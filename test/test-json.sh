@@ -31,5 +31,11 @@ function testValidSample {
     fi
 }
 
-runOnEachFile testInvalidSample -- test/json-parser-samples/invalid-*.json &&
-runOnEachFile testValidSample -- test/json-parser-samples/valid-*.json
+declare err=0
+runOnEachFile testInvalidSample \
+        -- test/json-samples/thirdparty/invalid-*.json || err=$?
+
+runOnEachFile testValidSample \
+        -- test/json-samples/thirdparty/valid-*.json || err=$?
+
+exit "$err"
