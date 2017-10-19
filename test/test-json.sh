@@ -22,11 +22,18 @@ function testValidSample {
     local filename="$1"
     local contents="$(<"$filename")"
     local err=0
-    json:printProperties "$contents" >/dev/null || err=$?
+    local out="$(json:printProperties "$contents" | sort)" err=$?
 
-    if [[ "$err" -eq 0 ]]; then
+    local basename="$(getBasename "$filename")"
+          basename="$(replaceSuffix "$basename" -output.txt)"
+    local expectedFile="test/json-expected-output/$basename"
+    local expectedText="$(sort < "${expectedFile}")"
+
+    if [[ "$err" -eq 0 ]] && [[ "$out" == "$expectedText" ]]; then
         return 0
     else
+	# echo "OUTPUT: $out"
+	# echo "EXPECTED: $expectedText"
         return 1
     fi
 }

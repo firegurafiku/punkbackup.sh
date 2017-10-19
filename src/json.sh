@@ -21,7 +21,7 @@ function json:printProperties {
 
 function json@dumpPair {
     printf "%s\t%s\t%s\n" \
-        "$jsonPath" "$jsonExtractedType" "$jsonExtractedValue"
+        "${jsonPath:-.}" "$jsonExtractedType" "$jsonExtractedValue"
 }
 
 function json@processValue {
@@ -211,7 +211,7 @@ function json@extractBool {
         local matchLen="${#match}"
 
         jsonExtractedValue="$match"
-        jsonExtractedType="bool"
+        jsonExtractedType="boolean"
         jsonText="${jsonText:matchLen}"
         return 0
     fi

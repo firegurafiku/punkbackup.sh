@@ -1,5 +1,21 @@
 # Common routines useful for testing
 
+function getBasename {
+    if [[ "$1" =~ /([^/]+)$ ]]; then
+	printf "%s\n" "${BASH_REMATCH[1]}"
+    else
+	printf "%s\n" "$1"
+    fi
+}
+
+function replaceSuffix {
+    if [[ "$1" =~ ^(.*)[.][^.]*$ ]]; then
+	printf "%s\n" "${BASH_REMATCH[1]}$2"
+    else
+	printf "%s\n" "$1"
+    fi
+}
+
 function runOnEachFile {
     local -a fixedArgs=()
     local fixedArgsCount=0

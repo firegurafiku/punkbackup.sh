@@ -1,0 +1,6 @@
+.0	number	0.4e006
+.1	number	0.4e-006
+.2	number	0.4e+006
+.3	number	4e006
+.4	number	4e-006
+.5	number	4e+006

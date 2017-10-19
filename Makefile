@@ -18,7 +18,7 @@ test: all $(TESTSCRIPTS)
 	  [ "$$success" = "y" ]
 
 punkbackup.sh: $(SUBSCRIPTS)
-	cat $(^) > $(@)
-	echo >> $(@)
-	echo 'entrypoint "$$@"' >> $(@)
-	chmod +x $(@)
+	@ cat $(^) > $(@)
+	@ echo >> $(@)
+	@ echo 'entrypoint "$$@"' >> $(@)
+	@ chmod +x $(@)

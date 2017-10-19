@@ -1,0 +1,3 @@
+.0	boolean	true
+.1	boolean	false
+.2	string	\u20AC\u20AD

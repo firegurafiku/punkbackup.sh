@@ -1,0 +1,2 @@
+.min	number	-1.0e+28
+.max	number	1.0e+28
