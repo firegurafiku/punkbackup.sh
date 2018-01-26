@@ -8,6 +8,7 @@ declare optRandomKeySize="256"
 declare optCompressor="gzip"
 declare optCompressionLevel="6"
 declare optPublicKey=""
+declare optSudoBinary="$(/usr/bin/env sudo)"
 declare argDestinationUrl=""
 
 function main:listOptions {
@@ -19,6 +20,7 @@ function main:listOptions {
     println "random-key-size:"
     println "compressor:"
     println "compression-level:"
+    println "sudo-binary:"
 }
 
 function main:processOptions {
@@ -31,6 +33,7 @@ function main:processOptions {
         --random-key-size)   optRandomKeySize="$2";;
         --comspressor)       optCompressor="$2";;
         --compression-level) optCompressionLevel="$2";;
+        --sudo-binary)       optSudoBinary="$2";;
         *) return 1;;
     esac
 
@@ -88,7 +91,7 @@ function main:printHelp {
             |   --compression-level=NUM
             |   --random-key-size=NUM
             |   --chunk-size=SIZE
-            |
+            |   --sudo-binary=PATH
             ";;
 
         *) abort 1 "It's a bug";;
@@ -102,6 +105,10 @@ function main:validateOptions {
 
     if ! (( $optCompressionLevel >= 1 && $optCompressionLevel <= 9 )); then
         abort 1 "compression level must be in range [1, 9]"
+    fi
+
+    if ! [ -x "$optSudoBinary" ]; then
+        abort 1 "sudo binary must exist and be executable"
     fi
 }
 
