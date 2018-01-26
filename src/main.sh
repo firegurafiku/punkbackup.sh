@@ -8,6 +8,7 @@ declare optRandomKeySize="256"
 declare optCompressor="gzip"
 declare optCompressionLevel="6"
 declare optPublicKey=""
+declare optChunkSize="16M"
 declare optSudoBinary="$(/usr/bin/env sudo)"
 declare argDestinationUrl=""
 
@@ -20,6 +21,7 @@ function main:listOptions {
     println "random-key-size:"
     println "compressor:"
     println "compression-level:"
+    println "chunk-size:"
     println "sudo-binary:"
 }
 
@@ -33,6 +35,7 @@ function main:processOptions {
         --random-key-size)   optRandomKeySize="$2";;
         --comspressor)       optCompressor="$2";;
         --compression-level) optCompressionLevel="$2";;
+        --chunk-size)        optChunkSize="$2";;
         --sudo-binary)       optSudoBinary="$2";;
         *) return 1;;
     esac
