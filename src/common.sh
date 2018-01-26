@@ -1,29 +1,71 @@
+InterfaceModules+=("common")
 
-declare -r ProjectName="punkbackup.sh"
+declare TempDir
+declare optVerbose="n"
+declare optDebug="n"
+declare optSystemTmp="/tmp"
+declare optSudoBinary="$(which sudo)"
 
-declare -a InterfaceModules=()
+function common:listOptions {
+    println "verbose"
+    println "debug"
+    println "system-tmp:"
+    println "sudo-binary:"
+}
 
-declare -a ProviderModules=()
+function common:processOptions {
+    case "$1" in
+	--verbose)           optVerbose="y";;
+	--debug)             optDebug="y";;
+        --system-tmp)        optSystemTmp="$2";;
+        --sudo-binary)       optSudoBinary="$2";;
+        *) return 1;;
+    esac
 
-declare DefaultProvider
+    return 0
+}
 
-function detectProvider {
-    local remoteUrl="$1"
-    local provider
-    for provider in "${ProviderModules[@]}"; do
-        if [[ "$remoteUrl" =~ ^"$provider:/" ]]; then
-            println "$provider"
-            return
-        fi
-    done
+function common:validateOptions {
+    [ -d "$optSystemTmp" ] ||
+        abort 1 "--system-tmp: directory must exist"
+    [ -x "$optSudoBinary" ] ||
+        abort 1 "--sudo-binary: file must exist and be executable"
+}
 
-    if [[ "$remoteUrl" =~ ^([a-zA-Z][a-zA-Z0-9+-]*):/ ]]; then
-        provider="${BASH_REMATCH[1]}"
-        abort 1 "Backup provider '$provider:/' unsupported"
+function common:printHelp {
+    case "$1" in
+        --usage) ;;
+	--arguments) ;;
+
+        --options)
+        printMultiline "
+            | Common options:
+            |   --tmp-prefix=DIR
+            |   --sudo-binary=PATH
+            ";;
+
+        *) abort 1 "a bug in 'common:printHelp'";;
+    esac
+}
+
+function common:listCommands {
+    true;
+}
+
+function common:createTempDir {
+    TempDir="$(mktemp -d --tmpdir="$optSystemTmp" -- "punkbackup.XXXXXXXXX")"
+}
+
+function common:cleanupTempDir {
+    rm -rf -- "$TempDir"
+}
+
+function common:withSudo {
+    if [ -z "$optSudoBinary" ]; then
+	"$@"
+    else
+        "$optSudoBinary" "$@"
     fi
-
-    println "$DefaultProvider"
-    return
 }
 
 function skipln {
@@ -67,4 +109,8 @@ function abort {
 
     println "$@" 1>&2
     exit "$exitCode"
+}
+
+function die {
+    abort 1
 }
