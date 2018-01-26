@@ -13,7 +13,7 @@ function localfs:validateOptions { true; }
 function localfs:listDirectoryContents { # remote_path
     local fullpath="$(destinationFullPath "$1")"
     local file
-    for file in fullpath/*; do
+    for file in "$fullpath"/*; do
         println "$(destinationRelPath "$file")"
     done
 }
